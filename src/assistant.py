@@ -1,0 +1,41 @@
+import typing
+
+from src import handlers
+from src.handlers import handle_error
+from src.models import AddressBook
+
+
+class Assistant:
+    def __init__(self):
+        self.book = self._load_address_book()
+        self.alive = True
+
+    @staticmethod
+    def _load_address_book() -> AddressBook:
+        return AddressBook()
+
+    @classmethod
+    def show_welcome_message(cls) -> None:
+        cls.show_message("Welcome to the assistant bot!")
+
+    @staticmethod
+    def show_message(text: str) -> None:
+        print(text)
+
+    @staticmethod
+    def wait_command() -> typing.Tuple[str, str]:
+        user_input = input("Enter a command: ")
+        cmd, _, args = user_input.strip().partition(" ")
+        return cmd.lower(), args.strip()
+
+    @handle_error
+    def handle(self, command: str, args: str) -> str:
+        if command in ["close", "exit"]:
+            self.alive = False
+            return "Good bye!"
+        elif command == "show":
+            return handlers.show_all(self.book)
+        elif command == "add":
+            return handlers.add_contact(args, self.book)
+
+        return "Unknown command."
