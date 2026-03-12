@@ -2,12 +2,13 @@ import typing
 
 from src import handlers
 from src.handlers import handle_error
-from src.models import AddressBook
+from src.models import AddressBook, NoteBook
 
 
 class Assistant:
     def __init__(self):
         self.book = self._load_address_book()
+        self.notes = NoteBook()
         self.alive = True
 
     @staticmethod
@@ -37,5 +38,7 @@ class Assistant:
             return handlers.show_all(self.book)
         elif command == "add":
             return handlers.add_contact(args, self.book)
+        elif command == "add-note":
+            return handlers.add_note(args, self.notes)
 
         return "Unknown command."
