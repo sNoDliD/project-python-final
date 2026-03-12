@@ -40,5 +40,11 @@ class Assistant:
             return handlers.add_contact(args, self.book)
         elif command == "add-note":
             return handlers.add_note(args, self.notes)
+        elif command == "find-note":
+            return handlers.find_note(args, self.notes)
+        elif command == "all-notes":
+            return handlers.show_all_notes(args, self.notes)
+        elif command == "show-note":
+            return handlers.show_note(args, self.notes)
 
         return "Unknown command."

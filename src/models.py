@@ -127,4 +127,19 @@ class NoteBook(UserDict):
     def add_note(self, note: Note):
         self.data[note.title] = note
 
+    def find_notes(self, search_text: str):
+        search_request = search_text.lower()
+        found_notes = []
+
+        for title, note in self.data.items():
+            if search_request in title.lower() or search_request in note.content.lower():
+                found_notes.append(note)
+        
+        return found_notes
+    
+    def get_all_titles(self):
+        if not self.data:
+            return []
+        return list(self.data.keys())
+
 
