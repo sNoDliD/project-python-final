@@ -1,6 +1,6 @@
 import functools
 
-from src.models import AddressBook, Record, ValidationError, Note
+from src.models import AddressBook, Record, ValidationError, Note, NoteBook
 
 
 def handle_error(func):
@@ -24,7 +24,7 @@ def show_all(book: AddressBook):
     return "\n".join(str(record) for record in book.data.values())
 
 
-def add_contact(args, book: AddressBook) -> str:
+def add_contact(args: str, book: AddressBook) -> str:
     name, phone, *_ = args.split(" ")
     record = book.find(name)
     created = False
@@ -38,14 +38,13 @@ def add_contact(args, book: AddressBook) -> str:
         book.add_record(record)
     return "Contact added." if created else "Contact updated."
 
-def add_note(args, book):
-    input_data = " ".join(args)
 
-    if "|" not in input_data:
+def add_note(args: str, book: NoteBook):
+    if "|" not in args:
         return "Please use format Title | Content"
-    
-    title, content = input_data.split("|", 1)
+
+    title, content = args.split("|", 1)
     new_note = Note(title.strip(), content.strip())
     book.add_note(new_note)
 
-    return "Note is succesfully created"
+    return "Note is successfully created"
