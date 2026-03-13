@@ -24,7 +24,7 @@ def show_all(book: AddressBook):
     return "\n".join(str(record) for record in book.data.values())
 
 
-def add_contact(args: str, book: AddressBook) -> str:
+def add_contact(args, book: AddressBook) -> str:
     name, phone, *_ = args.split(" ")
     record = book.find(name)
     created = False
@@ -42,9 +42,53 @@ def add_contact(args: str, book: AddressBook) -> str:
 def add_note(args: str, book: NoteBook):
     if "|" not in args:
         return "Please use format Title | Content"
-
-    title, content = args.split("|", 1)
+    
+    title, content = input_data.split("|", 1)
     new_note = Note(title.strip(), content.strip())
     book.add_note(new_note)
 
     return "Note is successfully created"
+
+def find_note(args, book):
+    if not args:
+        return "Please enter search request"
+
+    search_request = args.strip()
+    found_notes = book.find_notes(search_request)
+
+    if not found_notes:
+        return f"Note for {search_request} not found"
+
+    result = "Found notes:\n"
+
+    for note in found_notes:
+        result += f"\n{note}\n"
+
+    return result.strip()
+
+def show_all_notes(args, book):
+    titles = book.get_all_titles()
+
+    if not titles:
+        return "Your notebook is empty"
+
+    result = "The list of your notes:\n"
+
+    for index, title in enumerate(titles, start=1):
+        result += f"{index}. {title}\n"
+
+    return result.strip()
+
+def show_note(args, book):
+    if not args:
+        return "Please enter the title of the note"
+
+    title = args.strip().lower()
+
+    found_notes = book.find_notes(title)
+
+    for note in found_notes:
+        if note.title.lower() == title:
+            return note
+
+    return f"Note '{title}' not found"
