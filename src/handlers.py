@@ -39,12 +39,10 @@ def add_contact(args, book: AddressBook) -> str:
     return "Contact added." if created else "Contact updated."
 
 def add_note(args, book):
-    input_data = " ".join(args)
-
-    if "|" not in input_data:
+    if "|" not in args:
         return "Please use format Title | Content"
     
-    title, content = input_data.split("|", 1)
+    title, content = args.split("|", 1)
     new_note = Note(title.strip(), content.strip())
     book.add_note(new_note)
 
@@ -54,7 +52,7 @@ def find_note(args, book):
     if not args:
         return "Please enter search request"
     
-    search_request = " ".join(args)
+    search_request = args.strip()
     found_notes = book.find_notes(search_request)
 
     if not found_notes:
@@ -65,7 +63,7 @@ def find_note(args, book):
     for note in found_notes:
         result += f"\n{note}\n"
 
-        return result.strip()
+    return result.strip()
     
 def show_all_notes(args, book):
     titles = book.get_all_titles()
@@ -84,7 +82,7 @@ def show_note(args, book):
     if not args:
         return "Please enter the title of the note"
     
-    title = " ".join(args).strip().lower()
+    title = args.strip().lower()
     
     found_notes = book.find_notes(title)
     
