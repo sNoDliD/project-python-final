@@ -84,6 +84,22 @@ class AddressBook(UserDict):
     def delete(self, name: str):
         self.pop(name, None)
 
+    def search(self, query: str):
+        query = query.lower()
+        result = []
+
+        for record in self.values():
+            if query in record.name.value.lower():
+                result.append(record)
+                continue
+
+            for phone in record.phones:
+                if query in phone.value:
+                    result.append(record)
+                    break
+
+        return result
+    
     @staticmethod
     def _get_birthday_date(birthday: date, year: int) -> date:
         try:
