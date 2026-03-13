@@ -37,5 +37,11 @@ class Assistant:
             return handlers.show_all(self.book)
         elif command == "add":
             return handlers.add_contact(args, self.book)
+        elif command == "birthdays":
+            birthdays = self.book.get_upcoming_birthdays(int(args))
 
+            if not birthdays:
+                return "No upcoming birthdays."
+
+            return "\n".join(f"{b['name']} - {b['congratulation_date']}" for b in birthdays)
         return "Unknown command."
