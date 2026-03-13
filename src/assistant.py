@@ -38,6 +38,20 @@ class Assistant:
             return handlers.show_all(self.book)
         elif command == "add":
             return handlers.add_contact(args, self.book)
+        elif command == "search":
+            results = self.book.search(args)
+
+            if not results:
+                return "No contacts found."
+
+            return "\n".join(str(contact) for contact in results)
+        elif command == "birthdays":
+            birthdays = self.book.get_upcoming_birthdays(int(args))
+
+            if not birthdays:
+                return "No upcoming birthdays."
+
+            return "\n".join(f"{b['name']} - {b['congratulation_date']}" for b in birthdays)
         elif command == "add-note":
             return handlers.add_note(args, self.notes)
         elif command == "find-note":

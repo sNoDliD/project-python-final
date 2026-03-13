@@ -1,5 +1,5 @@
 from collections import UserDict
-from datetime import datetime, date
+from datetime import date, timedelta
 
 
 class ValidationError(Exception):
@@ -93,6 +93,22 @@ class AddressBook(UserDict):
     def delete(self, name: str):
         self.pop(name, None)
 
+    def search(self, query: str):
+        query = query.lower()
+        result = []
+
+        for record in self.values():
+            if query in record.name.value.lower():
+                result.append(record)
+                continue
+
+            for phone in record.phones:
+                if query in phone.value:
+                    result.append(record)
+                    break
+
+        return result
+    
     @staticmethod
     def _get_birthday_date(birthday: date, year: int) -> date:
         try:
@@ -100,26 +116,35 @@ class AddressBook(UserDict):
         except ValidationError:
             return date(year, 3, 1)
 
-    def get_upcoming_birthdays(self):
+    def get_upcoming_birthdays(self, days: int):
         today = date.today()
         upcoming = []
+
         for record in self.values():
             if not record.birthday:
                 continue
+
             birthday_this_year = self._get_birthday_date(record.birthday.value, today.year)
+
             if birthday_this_year < today:
                 nearest_birthday = self._get_birthday_date(record.birthday.value, today.year + 1)
             else:
                 nearest_birthday = birthday_this_year
 
-            nearest_week = (nearest_birthday - today).days
-            if nearest_week < 0 or nearest_week > 7:
-                continue
+            delta_days = (nearest_birthday - today).days
 
-            upcoming.append({
-                "name": record.name.value,
-                "congratulation_date": nearest_birthday.strftime("%d.%m.%Y")
-            })
+            if 0 <= delta_days <= days:
+                congratulation_date = nearest_birthday
+
+                if congratulation_date.weekday() == 5:
+                    congratulation_date += timedelta(days=2)
+                elif congratulation_date.weekday() == 6:
+                    congratulation_date += timedelta(days=1)
+
+                upcoming.append({
+                    "name": record.name.value,
+                    "congratulation_date": congratulation_date.strftime("%d.%m.%Y")
+                    })
         return upcoming
     
 
