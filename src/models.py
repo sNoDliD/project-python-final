@@ -40,6 +40,15 @@ class Birthday(Field):
         return self.value.strftime("%d.%m.%Y")
 
 
+class Note:
+    def __init__(self, title: str, content: str):
+        self.title = title
+        self.content = content
+
+    def __str__(self):
+        return f"Title: {self.title}\n Content: {self.content}"
+
+
 class Record:
     def __init__(self, name: str):
         self.name = Name(name)
@@ -137,3 +146,10 @@ class AddressBook(UserDict):
                     "congratulation_date": congratulation_date.strftime("%d.%m.%Y")
                     })
         return upcoming
+    
+
+class NoteBook(UserDict):
+    def add_note(self, note: Note):
+        self.data[note.title] = note
+
+
