@@ -28,7 +28,7 @@ def add_contact(args, book: AddressBook) -> str:
     try:
         name, phone, email, birthday, *_ = args.split(" ")
     except ValueError:
-        return "Unexpected format. Please enter: <name> <phone> <email> <birthday"
+        return "Unexpected format. Please enter: <name> <phone> <email> <birthday>"
     record = book.find(name)
     created = False
     if record is None:
@@ -75,6 +75,19 @@ def add_note(args: str, book: NoteBook):
     book.add_note(new_note)
 
     return "Note is successfully created"
+
+
+def add_note_tags(args: str, book: NoteBook):
+    try:
+        note_title, *tags = args.split(" ")
+    except ValueError:
+        return "Unexpected format. Please enter: <note> <tag1> <tag2> ..."
+    try:
+        note = book[note_title]
+    except KeyError:
+        return f"Note with title {note_title!r} not found"
+    note.tags.update(tags)
+    return "Note's tags is successfully updated"
 
 
 def find_note(args: str, book: NoteBook):
