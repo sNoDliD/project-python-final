@@ -52,5 +52,11 @@ class Assistant:
             return handlers.show_all_notes(self.notes)
         elif command == "show-note":
             return handlers.show_note(args, self.notes)
+        elif command == "delete-note":
+            return handlers.delete_note(args, self.notes)
+        elif command == "edit-note-content":
+            return handlers.edit_note_content(args, self.notes)
+        elif command == "edit-note-title":
+            return handlers.edit_note_title(args, self.notes)
 
         return "Unknown command."

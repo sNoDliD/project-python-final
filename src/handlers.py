@@ -135,3 +135,40 @@ def show_note(args: str, book: NoteBook):
             return note
 
     return f"Note '{title}' not found"
+
+
+def delete_note(args, book: NoteBook):
+    if not args:
+        return "Please enter the title of the note"
+    
+    title = args.strip()
+
+    if book.delete_note(title):
+        return f"Note {title} deleted"
+    
+    return f"Note {title} not found"
+
+
+def edit_note_content(args, book: NoteBook):
+    if "|" not in args:
+        return "Please use format Title | New content"
+
+    title, new_content = args.split("|", 1)
+
+    if book.edit_note_content(title.strip(), new_content.strip()):
+        return f"Content of note {title} was updated"
+    else:
+        return f"Note {title} not found"
+    
+    
+def edit_note_title(args, book: NoteBook):
+    if "|" not in args:
+        return "Please use format Old title | New title"
+    
+    old_title, new_title = args.split("|", 1)
+
+    if book.edit_note_title(old_title.strip(), new_title.strip()):
+        return f"Note {old_title} was renamed to {new_title}"
+    else:
+        return f"Note {old_title} not found"
+    
