@@ -178,6 +178,7 @@ class NoteBook(UserDict):
     def add_note(self, note: Note):
         self.data[note.title] = note
 
+
     def find_notes(self, search_text: str):
         search_request = search_text.lower()
         found_notes = []
@@ -187,19 +188,23 @@ class NoteBook(UserDict):
                 found_notes.append(note)
 
         return found_notes
+    
 
     def get_all_titles(self):
         if not self.data:
             return []
+        
         return list(self.data.keys())
+    
 
     def delete_note(self, title: str):
         if title in self.data:
-            del self.data(title)
+            del self.data[title]
             return True
         
         return False
     
+
     def edit_note_content(self, title: str, new_content: str):
         if title in self.data:
             self.data[title].content = new_content
@@ -207,6 +212,7 @@ class NoteBook(UserDict):
         
         return False
     
+
     def edit_note_title(self, old_title: str, new_title: str):
         if old_title in self.data:
             content = self.data[old_title].content
@@ -216,3 +222,26 @@ class NoteBook(UserDict):
             return True
         
         return False
+
+
+    def find_note_by_tag(self, tag: str):
+        search_tag = tag.strip().lower()
+        found_notes = []
+
+        for note in self.data.values():
+            if search_tag in note.tags:
+                found_notes.append(note)
+
+        return found_notes
+    
+
+    def sort_notes_by_tag(self, tag: str):
+        search_tag = tag.strip().lower()
+
+        filtered_notes = [
+            note for note in self.data.values() 
+            if search_tag in [t.lower() for t in note.tags]
+        ]
+
+        return sorted(filtered_notes, key=lambda x: x.title.lower())
+
