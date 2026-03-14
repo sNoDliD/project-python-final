@@ -86,7 +86,7 @@ def add_note_tags(args: str, book: NoteBook):
         note = book[note_title]
     except KeyError:
         return f"Note with title {note_title!r} not found"
-    note.tags.update(tags)
+    note.tags.update([tag.lower() for tag in tags])
     return "Note's tags is successfully updated"
 
 
@@ -108,7 +108,7 @@ def find_note(args: str, book: NoteBook):
     return result.strip()
 
 
-def show_all_notes(book: NoteBook):
+def show_all_notes(args: str, book: NoteBook):
     titles = book.get_all_titles()
 
     if not titles:
@@ -135,3 +135,76 @@ def show_note(args: str, book: NoteBook):
             return note
 
     return f"Note '{title}' not found"
+
+
+def delete_note(args, book: NoteBook):
+    if not args:
+        return "Please enter the title of the note"
+    
+    title = args.strip()
+
+    if book.delete_note(title):
+        return f"Note {title} deleted"
+    
+    return f"Note {title} not found"
+
+
+def edit_note_content(args, book: NoteBook):
+    if "|" not in args:
+        return "Please use format Title | New content"
+
+    title, new_content = args.split("|", 1)
+
+    if book.edit_note_content(title.strip(), new_content.strip()):
+        return f"Content of note {title} was updated"
+    else:
+        return f"Note {title} not found"
+    
+    
+def edit_note_title(args, book: NoteBook):
+    if "|" not in args:
+        return "Please use format Old title | New title"
+    
+    old_title, new_title = args.split("|", 1)
+
+    if book.edit_note_title(old_title.strip(), new_title.strip()):
+        return f"Note {old_title} was renamed to {new_title}"
+    else:
+        return f"Note {old_title} not found"
+    
+def find_notes_by_tag(args, book: NoteBook):
+    if not args:
+        return "Please enter tag for search"
+    
+    tag = args.strip()
+    found_notes = book.find_note_by_tag(tag)
+
+    if not found_notes:
+        return f"Notes with tag '{tag}' not found"
+    
+    result = f"Notes with tag '{tag}':\n"
+
+    for note in found_notes:
+        result += f"\n{note}\n"
+
+    return result.strip()
+
+
+def sort_by_tag(args: str, book: NoteBook):
+    if not args:
+        return "Please enter a tag to sort by. 🏷️"
+
+    tag = args.strip()
+    found_notes = book.sort_notes_by_tag(tag)
+
+    if not found_notes:
+        return f"Notes with tag '{tag}' not found"
+
+    result = f"Results for tag '{tag}':\n"
+
+    for note in found_notes:
+        result += f"\n--- {note.title} ---\n{note.content}\n"
+    
+    return result.strip()
+
+    
