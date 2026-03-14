@@ -55,9 +55,13 @@ class Note:
     def __init__(self, title: str, content: str):
         self.title = title
         self.content = content
+        self.tags: typing.Set[str] = set()
 
     def __str__(self):
-        return f"Title: {self.title}\n Content: {self.content}"
+        title = f"Title: {self.title}"
+        if tags := self.tags:
+            title += f" [{', '.join(tags)}]"
+        return f"{title}\n Content: {self.content}"
 
 
 class Record:

@@ -44,6 +44,8 @@ class Assistant:
             return handlers.get_upcoming_birthdays(args, self.book)
         elif command == "add-note":
             return handlers.add_note(args, self.notes)
+        elif command == "add-tags":
+            return handlers.add_note_tags(args, self.notes)
         elif command == "find-note":
             return handlers.find_note(args, self.notes)
         elif command == "all-notes":
