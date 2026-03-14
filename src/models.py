@@ -1,5 +1,7 @@
+import re
+import typing
 from collections import UserDict
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 
 class ValidationError(Exception):
@@ -28,6 +30,15 @@ class Phone(Field):
         super().__init__(value)
 
 
+class Email(Field):
+    pattern = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
+
+    def __init__(self, value: str):
+        if not re.fullmatch(self.pattern, value):
+            raise ValidationError(f"Invalid email format: {value!r}")
+        super().__init__(value)
+
+
 class Birthday(Field):
     def __init__(self, value: str):
         try:
@@ -52,11 +63,15 @@ class Note:
 class Record:
     def __init__(self, name: str):
         self.name = Name(name)
-        self.phones = []
-        self.birthday = None
+        self.phones: typing.List[Phone] = []
+        self.emails: typing.List[Email] = []
+        self.birthday: Birthday | None = None
 
     def add_phone(self, phone: str):
         self.phones.append(Phone(phone))
+
+    def add_email(self, email: str):
+        self.emails.append(Email(email))
 
     def remove_phone(self, phone: str):
         phone_obj = self.find_phone(phone)
@@ -76,11 +91,18 @@ class Record:
                 return p
         return None
 
-    def add_birthday(self, birthday: str):
+    def set_birthday(self, birthday: str):
         self.birthday = Birthday(birthday)
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        info = [f"Contact name: {self.name.value}"]
+        if phones := self.phones:
+            info.append(f"phones: {'; '.join(str(i) for i in phones)}")
+        if emails := self.emails:
+            info.append(f"emails: {'; '.join(str(i) for i in emails)}")
+        if birthday := self.birthday:
+            info.append(f"birthday: {birthday}")
+        return ", ".join(info)
 
 
 class AddressBook(UserDict):
@@ -108,7 +130,7 @@ class AddressBook(UserDict):
                     break
 
         return result
-    
+
     @staticmethod
     def _get_birthday_date(birthday: date, year: int) -> date:
         try:
@@ -143,10 +165,10 @@ class AddressBook(UserDict):
 
                 upcoming.append({
                     "name": record.name.value,
-                    "congratulation_date": congratulation_date.strftime("%d.%m.%Y")
-                    })
+                    "congratulation_date": congratulation_date.strftime("%d.%m.%Y"),
+                })
         return upcoming
-    
+
 
 class NoteBook(UserDict):
     def add_note(self, note: Note):
@@ -159,12 +181,10 @@ class NoteBook(UserDict):
         for title, note in self.data.items():
             if search_request in title.lower() or search_request in note.content.lower():
                 found_notes.append(note)
-        
+
         return found_notes
-    
+
     def get_all_titles(self):
         if not self.data:
             return []
         return list(self.data.keys())
-
-
