@@ -25,13 +25,19 @@ def show_all(book: AddressBook):
 
 
 def add_contact(args, book: AddressBook) -> str:
-    name, phone, *_ = args.split(" ")
+    try:
+        name, phone, email, birthday, *_ = args.split(" ")
+    except ValueError:
+        return "Unexpected format. Please enter: <name> <phone> <email> <birthday"
     record = book.find(name)
     created = False
     if record is None:
         record = Record(name)
         created = True
 
+    record.set_birthday(birthday)
+    if email:
+        record.add_email(email)
     if phone:
         record.add_phone(phone)
     if created:
@@ -39,17 +45,39 @@ def add_contact(args, book: AddressBook) -> str:
     return "Contact added." if created else "Contact updated."
 
 
+def search_contacts(args: str, book: AddressBook):
+    results = book.search(args)
+    if not results:
+        return "No contacts found."
+
+    return "\n".join(str(contact) for contact in results)
+
+
+def get_upcoming_birthdays(args: str, book: AddressBook):
+    try:
+        days = int(args)
+    except ValueError:
+        return f"Expect an integer, not {args!r}"
+
+    birthdays = book.get_upcoming_birthdays(days)
+    if not birthdays:
+        return "No upcoming birthdays."
+
+    return "\n".join(f"{b['name']} - {b['congratulation_date']}" for b in birthdays)
+
+
 def add_note(args: str, book: NoteBook):
     if "|" not in args:
         return "Please use format Title | Content"
-    
-    title, content = input_data.split("|", 1)
+
+    title, content = args.split("|", 1)
     new_note = Note(title.strip(), content.strip())
     book.add_note(new_note)
 
     return "Note is successfully created"
 
-def find_note(args, book):
+
+def find_note(args: str, book: NoteBook):
     if not args:
         return "Please enter search request"
 
@@ -66,7 +94,8 @@ def find_note(args, book):
 
     return result.strip()
 
-def show_all_notes(args, book):
+
+def show_all_notes(book: NoteBook):
     titles = book.get_all_titles()
 
     if not titles:
@@ -79,7 +108,8 @@ def show_all_notes(args, book):
 
     return result.strip()
 
-def show_note(args, book):
+
+def show_note(args: str, book: NoteBook):
     if not args:
         return "Please enter the title of the note"
 
