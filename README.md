@@ -17,8 +17,8 @@ The application allows you to store contacts and phone numbers and interact with
 | ✅           | Validate phone numbers and email addresses when adding or editing contacts                | -                                                                  |                                                                                                                                   |
 | ✅           | Ability to add text notes                                                                 | `add-note`, `all-notes`, `show-note`                               | `add-note Products \| milk, cheese, sausage`                                                                                      |
 | ✅           | Search, edit, and delete notes                                                            | `find-note`, `edit-note-content`, `edit-note-title`, `delete-note` | `find-note Products`, `edit-note-content Products \| coffe, tea`, `edit-note-title Products \| Breakfast`, `delete-note Products` |
-| ❌           | Persist all data (contacts and notes) on disk in the user directory                       | -                                                                  |                                                                                                                                   |
-| ❌           | Restart the assistant without losing data                                                 | -                                                                  |                                                                                                                                   |
+| ✅           | Persist all data (contacts and notes) on disk in the user directory                       | -                                                                  |                                                                                                                                   |
+| ✅           | Restart the assistant without losing data                                                 | -                                                                  |                                                                                                                                   |
 | ✅           | Add tags to notes                                                                         | `add-tags`                                                         | `add-tags Products buy-list shoping`                                                                                              |
 | ✅           | Search and sort notes by tags                                                             | `find-tag`, `sort-tag`                                             | `find-tag shoping`, `sort-tag buy-list`                                                                                           |
 
@@ -58,16 +58,6 @@ cd project-python-final
 ### 3. Run the application
 
 `python3 main.py` or `python main.py`
-
----
-
-## Available Commands
-
-| Command              | Description                                 |
-|----------------------|---------------------------------------------|
-| `add <name> <phone>` | Add a new contact or update an existing one |
-| `show`               | Display all saved contacts                  |
-| `exit` / `close`     | Exit the assistant                          |
 
 ---
 
