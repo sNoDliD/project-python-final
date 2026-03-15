@@ -192,3 +192,27 @@ class NoteBook(UserDict):
         if not self.data:
             return []
         return list(self.data.keys())
+
+    def delete_note(self, title: str):
+        if title in self.data:
+            del self.data(title)
+            return True
+        
+        return False
+    
+    def edit_note_content(self, title: str, new_content: str):
+        if title in self.data:
+            self.data[title].content = new_content
+            return True
+        
+        return False
+    
+    def edit_note_title(self, old_title: str, new_title: str):
+        if old_title in self.data:
+            content = self.data[old_title].content
+            new_note = Note(new_title, content)
+            self.add_note(new_note)
+            self.delete_note(old_title)
+            return True
+        
+        return False
