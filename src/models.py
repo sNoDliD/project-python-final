@@ -1,3 +1,4 @@
+import pickle
 import re
 import typing
 from collections import UserDict
@@ -109,7 +110,25 @@ class Record:
         return ", ".join(info)
 
 
-class AddressBook(UserDict):
+class PickleDumper:
+    dump_filepath: str
+
+    def dump(self):
+        with open(self.dump_filepath, "wb") as f:
+            pickle.dump(self, f)
+
+    @classmethod
+    def load(cls):
+        try:
+            with open(cls.dump_filepath, "rb") as f:
+                return pickle.load(f)
+        except FileNotFoundError:
+            return cls()
+
+
+class AddressBook(PickleDumper, UserDict):
+    dump_filepath = "addressbook.pickle"
+
     def add_record(self, record: Record):
         self[record.name.value] = record
 
@@ -174,7 +193,9 @@ class AddressBook(UserDict):
         return upcoming
 
 
-class NoteBook(UserDict):
+class NoteBook(PickleDumper, UserDict):
+    dump_filepath = "notebook.pickle"
+
     def add_note(self, note: Note):
         self.data[note.title] = note
 

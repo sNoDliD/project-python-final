@@ -7,13 +7,9 @@ from src.models import AddressBook, NoteBook
 
 class Assistant:
     def __init__(self):
-        self.book = self._load_address_book()
-        self.notes = NoteBook()
+        self.book = AddressBook.load()
+        self.notes = NoteBook.load()
         self.alive = True
-
-    @staticmethod
-    def _load_address_book() -> AddressBook:
-        return AddressBook()
 
     @classmethod
     def show_welcome_message(cls) -> None:
@@ -29,6 +25,17 @@ class Assistant:
         cmd, _, args = user_input.strip().partition(" ")
         return cmd.lower(), args.strip()
 
+    @staticmethod
+    def save_after_execution(func):
+        def wrapper(self: Assistant, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            self.book.dump()
+            self.notes.dump()
+            return result
+
+        return wrapper
+
+    @save_after_execution
     @handle_error
     def handle(self, command: str, args: str) -> str:
         if command in ["close", "exit"]:
