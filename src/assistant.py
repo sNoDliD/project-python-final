@@ -40,6 +40,10 @@ class Assistant:
             return handlers.add_contact(args, self.book)
         elif command == "search-contacts":
             return handlers.search_contacts(args, self.book)
+        elif command == "edit-contact":
+            return handlers.edit_contact(args, self.book)
+        elif command == "delete-contact":
+            return handlers.delete_contact(args, self.book)
         elif command == "birthdays":
             return handlers.get_upcoming_birthdays(args, self.book)
         elif command == "add-note":

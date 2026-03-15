@@ -24,7 +24,7 @@ def show_all(book: AddressBook):
     return "\n".join(str(record) for record in book.data.values())
 
 
-def add_contact(args, book: AddressBook) -> str:
+def add_contact(args: str, book: AddressBook) -> str:
     try:
         name, phone, email, birthday, *_ = args.split(" ")
     except ValueError:
@@ -51,6 +51,36 @@ def search_contacts(args: str, book: AddressBook):
         return "No contacts found."
 
     return "\n".join(str(contact) for contact in results)
+
+
+def edit_contact(args: str, book: AddressBook):
+    try:
+        name, field, value = args.split(" ")
+    except ValueError:
+        return "Unexpected format. Please enter: <name> <phone/email/birthday> <value>"
+    record = book.find(name)
+    if not record:
+        return f"Contact {name!r} not found"
+    match field:
+        case "birthday":
+            record.set_birthday(value)
+        case "email":
+            record.emails.clear()
+            record.add_email(value)
+        case "phone":
+            record.phones.clear()
+            record.add_phone(value)
+        case _:
+            return f"Unexpected {field=}. Please enter: phone/email/birthday."
+    return f"Contact {name!r} updated."
+
+
+def delete_contact(args: str, book: AddressBook):
+    name = args
+    if not book.find(name):
+        return f"Contact {name!r} not found"
+    book.delete(name)
+    return f"Contact {name!r} deleted"
 
 
 def get_upcoming_birthdays(args: str, book: AddressBook):
@@ -108,7 +138,7 @@ def find_note(args: str, book: NoteBook):
     return result.strip()
 
 
-def show_all_notes(args: str, book: NoteBook):
+def show_all_notes(book: NoteBook):
     titles = book.get_all_titles()
 
     if not titles:
@@ -137,19 +167,19 @@ def show_note(args: str, book: NoteBook):
     return f"Note '{title}' not found"
 
 
-def delete_note(args, book: NoteBook):
+def delete_note(args: str, book: NoteBook):
     if not args:
         return "Please enter the title of the note"
-    
+
     title = args.strip()
 
     if book.delete_note(title):
         return f"Note {title} deleted"
-    
+
     return f"Note {title} not found"
 
 
-def edit_note_content(args, book: NoteBook):
+def edit_note_content(args: str, book: NoteBook):
     if "|" not in args:
         return "Please use format Title | New content"
 
@@ -159,29 +189,30 @@ def edit_note_content(args, book: NoteBook):
         return f"Content of note {title} was updated"
     else:
         return f"Note {title} not found"
-    
-    
-def edit_note_title(args, book: NoteBook):
+
+
+def edit_note_title(args: str, book: NoteBook):
     if "|" not in args:
         return "Please use format Old title | New title"
-    
+
     old_title, new_title = args.split("|", 1)
 
     if book.edit_note_title(old_title.strip(), new_title.strip()):
         return f"Note {old_title} was renamed to {new_title}"
     else:
         return f"Note {old_title} not found"
-    
-def find_notes_by_tag(args, book: NoteBook):
+
+
+def find_notes_by_tag(args: str, book: NoteBook):
     if not args:
         return "Please enter tag for search"
-    
+
     tag = args.strip()
     found_notes = book.find_note_by_tag(tag)
 
     if not found_notes:
         return f"Notes with tag '{tag}' not found"
-    
+
     result = f"Notes with tag '{tag}':\n"
 
     for note in found_notes:
@@ -204,7 +235,5 @@ def sort_by_tag(args: str, book: NoteBook):
 
     for note in found_notes:
         result += f"\n--- {note.title} ---\n{note.content}\n"
-    
-    return result.strip()
 
-    
+    return result.strip()
