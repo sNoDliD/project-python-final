@@ -3,6 +3,9 @@ import re
 import typing
 from collections import UserDict
 from datetime import date, timedelta, datetime
+from pathlib import Path
+
+HOME_DIR = Path.home()
 
 
 class ValidationError(Exception):
@@ -127,7 +130,7 @@ class PickleDumper:
 
 
 class AddressBook(PickleDumper, UserDict):
-    dump_filepath = "addressbook.pickle"
+    dump_filepath = HOME_DIR / "addressbook.pickle"
 
     def add_record(self, record: Record):
         self[record.name.value] = record
@@ -194,7 +197,7 @@ class AddressBook(PickleDumper, UserDict):
 
 
 class NoteBook(PickleDumper, UserDict):
-    dump_filepath = "notebook.pickle"
+    dump_filepath = HOME_DIR / "notebook.pickle"
 
     def add_note(self, note: Note):
         self.data[note.title] = note

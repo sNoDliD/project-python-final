@@ -25,19 +25,14 @@ class Assistant:
         cmd, _, args = user_input.strip().partition(" ")
         return cmd.lower(), args.strip()
 
-    @staticmethod
-    def save_after_execution(func):
-        def wrapper(self: Assistant, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            self.book.dump()
-            self.notes.dump()
-            return result
-
-        return wrapper
-
-    @save_after_execution
-    @handle_error
     def handle(self, command: str, args: str) -> str:
+        result = self._handle(command, args)
+        self.book.dump()
+        self.notes.dump()
+        return result
+
+    @handle_error
+    def _handle(self, command: str, args: str) -> str:
         if command in ["close", "exit"]:
             self.alive = False
             return "Good bye!"

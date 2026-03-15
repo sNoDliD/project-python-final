@@ -55,9 +55,14 @@ git clone <REPOSITORY_URL>
 cd project-python-final
 ```
 
-### 3. Run the application
+### 3.1 Run the application from source
 
 `python3 main.py` or `python main.py`
+
+### 3.2 Run the application as package
+
+1. `pip install .`
+2. `assistant-bot`
 
 ---
 
