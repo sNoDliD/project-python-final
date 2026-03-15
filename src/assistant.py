@@ -58,5 +58,9 @@ class Assistant:
             return handlers.edit_note_content(args, self.notes)
         elif command == "edit-note-title":
             return handlers.edit_note_title(args, self.notes)
+        elif command == "find-tag":
+            return handlers.find_notes_by_tag(args, self.notes)
+        elif command == "sort-tag":
+            return handlers.sort_by_tag(args, self.notes)
 
         return "Unknown command."
